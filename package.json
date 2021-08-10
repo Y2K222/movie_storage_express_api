@@ -1,0 +1,30 @@
+{
+  "name": "movie_storage_api",
+  "version": "1.0.0",
+  "description": "Frame for movie storage applications and website",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "author": "Zaw Htet Aung",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^5.8.5",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "core-js-pure": "^3.15.2",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
+    "express-form-data": "^2.0.17",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.1",
+    "express-validator": "^5.3.1",
+    "googleapis": "^81.0.0",
+    "mongojs": "^3.1.0",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.7",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  }
+}
