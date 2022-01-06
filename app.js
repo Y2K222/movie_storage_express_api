@@ -1,9 +1,9 @@
-const express      = require('express');
-const passport     = require('passport');
-const validator    = require('express-validator');
-const fileUpload   = require('express-fileupload');
+const express = require('express');
+const passport = require('passport');
+const validator = require('express-validator');
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
-const bodyParser   = require('body-parser');
+const bodyParser = require('body-parser');
 
 // Express router
 const admins  = require('./routes/admins');
@@ -43,7 +43,15 @@ app.use('/api/admin', admins);
 app.use('/api/movies', movies);
 app.use('/api/resource', resource);
 app.use('/api/uploded_movies', uploded_movies);
-
+// Error handling middleware
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500).send(
+        {
+            status: err.status || 500,
+            message: err.message || 'Internal server',
+        }
+    )
+})
 app.listen(3000, () => {
     console.log(" < MOVIE STORAGE API > \n Express server is running at port 3000 \n ready to go ! ");
 });

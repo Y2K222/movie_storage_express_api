@@ -1,31 +1,27 @@
 const mongojs = require('mongojs')
 const express = require('express')
-
 const router = express.Router()
 const auth = require('../auth')
-const { body } = require('express-validator/check')
-const db = mongojs('movie_storage')
+const db_name = 'movie_storage'
+
+// Mongodb
+const db = mongojs(db_name)
 
 // Get one uploded movie
 router.get('/get_one/:id', auth.ensureEditor(), (req, res) => {
     req.checkParams('id', 'Invalid uploded_movie id').isMongoId()
     let validation_errors = req.validationErrors()
-    if(validation_errors) res.status(400).json(validation_errors)
+    if(validation_errors) { res.status(400).json(validation_errors); return false; }
 
     db.uploded_movies.findOne({_id: mongojs.ObjectId(req.params.id)}, (err, data) => {
-        if(err) res.status(500).json(err)
-        else if(!data) res.status(404)
-        res.status(200).json(data)
-    })
-
-})
-
-// Get all uploded movies
-router.get('/', auth.ensureEditor(), (req, res) => {
-    db.uploded_movies.find({}, (err, data) => {
-        if(err) res.status(500).json(err)
-        else if(!data) res.status(404)
-        res.status(200).json(data)
+        if(err) next(err)
+        else if (!data) {
+            res.status(404).json({
+                status: 404,
+                message: 'Content not found'
+            })
+        }
+        else res.status(200).json(data)
     })
 })
 
@@ -34,9 +30,8 @@ router.get('/get/total', (req, res) => {
     db.uploded_movies.aggregate({
         "$count": "count"
     }, (err, data) => {
-        if(err) res.status(500).json(err)
-        else if(!data) res.status(404)
-        res.status(200).json(data[0])
+        if(err) next(err)
+        else res.status(200).json(data)
     })
 })
 

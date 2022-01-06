@@ -1,5 +1,5 @@
 const { google } = require('googleapis')
-const credentials = require('../keys/credentials.json')
+const credentials = require('../keys/movie_home_service_account2.json')
 const Promise = require('core-js-pure/features/promise')
 
 const scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file']
