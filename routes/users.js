@@ -8,7 +8,7 @@ const router = express.Router();
 const db = mongojs('movie_storage');
 
 // Get one user
-router.get('/get_one/:id', auth.ensureAuth(), (req, res) => {
+router.get('/:id', auth.ensureAuth(), (req, res) => {
     // Validation
     req.checkParams('id', 'user id should be mongoId').isMongoId();
     let validation_errors = req.validationErrors();
@@ -49,7 +49,7 @@ router.get('/get/total', auth.ensureAdmin(), (req, res) => {
 });
 
 // Get users with skip and limit
-router.get('/limit', auth.ensureAdmin(), (req, res) => {
+router.post('/limit', auth.ensureAdmin(), (req, res) => {
     // Validation
     req.checkBody('skip', 'Skip shoud be int').notEmpty().isInt();
     req.checkBody('limit', 'Limit should be int').notEmpty().isInt();
@@ -75,13 +75,13 @@ router.get('/limit', auth.ensureAdmin(), (req, res) => {
 })
 
 // Add new user
-router.post('/', auth.ensureAdmin(), (rea, res) => {
+router.post('/', auth.ensureAdmin(), (req, res) => {
     // Validation
     req.checkBody('full_name', 'full_name should not be empty').notEmpty();
     req.checkBody('email', 'email should not be empty').notEmpty().isEmail();
     req.checkBody('password', 'password should not be empty').notEmpty();
     let validation_errors = req.validationErrors();
-    if (validation_errors) res.status(400).json({ status: 400, message: 'Bad Request' });
+    if (validation_errors) { res.status(400).json(validation_errors); return false }
 
     // Modify request body
     req.body.password = helper.hashPassword(req.body.password);
@@ -100,7 +100,7 @@ router.put('/:id', auth.ensureAuth(), (req, res) => {
     req.checkBody('full_name', 'full_name should not be empty').notEmpty();
     req.checkBody('email', 'email should not be empty').notEmpty().isEmail();
     let validation_errors = req.validationErrors();
-    if (validation_errors) res.status(400).json({ status: 400, message: 'Bad Request' })
+    if (validation_errors) { res.status(400).json(validation_errors); return false }
 
     // Checking password is in the req body
     if (req.body.password) req.body.password = helper.hashPassword(req.body.password);
@@ -133,7 +133,7 @@ router.put('/sub/:id', auth.ensureAdmin(), (req, res) => {
         { $set: req.body },
         { multi: false },
         (err, data) => {
-            helper.respondStatusToUser(res, err, data, { 'msg': 'User updated !' });
+            helper.respondStatusToUser(res, err, data, { 'msg': 'Subscription updated !' });
         }
     );
 });
@@ -147,10 +147,10 @@ router.delete('/sub/:id', auth.ensureAdmin(), (req, res) => {
     // Update
     db.users.update(
         { _id: mongojs.ObjectId(req.params.id) },
-        { $set: req.body },
+        { $set: subObj },
         { multi: false },
         (err, data) => {
-            helper.respondStatusToUser(res, err, data, { 'msg': 'User updated !' });
+            helper.respondStatusToUser(res, err, data, { 'msg': 'Subscription deleted !' });
         }
     );
 });
@@ -173,7 +173,7 @@ router.delete('/:id', auth.ensureAdmin(), (req, res) => {
 
 // Auth endpoints
 // Verify that user is logged in
-router.get('/verify', auth.ensureAuth(), (req, res) => {
+router.get('/account/verify', auth.ensureAuth(), (req, res) => {
     res.status(200).json(req.user);
 });
 

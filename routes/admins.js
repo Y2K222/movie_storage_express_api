@@ -130,7 +130,7 @@ router.get('/verify', auth.ensureAdmin(), (req, res) => {
 });
 
 // Login admin
-router.post('/login', auth.login(), (req, res) => {
+router.post('/login', auth.loginAdmin(), (req, res) => {
     req.user ? res.status(200).json(req.user) : res.sendStatus(401);
 });
 
